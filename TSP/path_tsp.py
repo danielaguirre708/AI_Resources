@@ -3,9 +3,8 @@ import json
 import math # contains sqrt, exp, pow, etc.
 import random
 import time
-
 from collections import deque
-# from helpers import *
+from TSP.helpers import *
 import itertools
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -124,8 +123,9 @@ class TravelingSalesmanProblem:
         """
         # TODO: Implement this function!
         # raise NotImplementedError
-        self.path = itertools.permutations(list(self.path))
-        yield self.ruta
+        permuta = itertools.permutations(list(self.path))
+        for p in permuta:
+            yield TravelingSalesmanProblem(p)
 
     def get_successor(self):
         """ Return a random state from the neighborhood of the current state.
@@ -149,12 +149,7 @@ class TravelingSalesmanProblem:
         """
         # TODO: Implement this function!
         # raise NotImplementedError
-        succ = 0
-        if succ == 0:
-            get_succesors = list(self.successors())
-            succ = 1
-
-            return get_succesors.pop(0)
+        return list(self.path)
 
     def __get_value(self):
         """ Calculate the total length of the closed-circuit path of the current
@@ -187,7 +182,7 @@ class TravelingSalesmanProblem:
         """
         # TODO: Implement this function!
         # raise NotImplementedError
-        self.path = self.get_successor()
+        # self.path = self.get_successor()
         dist_agg = 0
         for i in range(len(self.coords)):
             if i == len(self.coords) - 1:
@@ -199,9 +194,6 @@ class TravelingSalesmanProblem:
         return -1 * dist_agg
 
 # %%
-
-
-
 test_cities = [('DC', (11, 1)), ('SF', (0, 0)), ('PHX', (2, -3)), ('LA', (0, -4))]
 # %%
 tsp = TravelingSalesmanProblem(test_cities)
@@ -212,9 +204,6 @@ tsp = TravelingSalesmanProblem(test_cities)
 assert round(-tsp.utility, 2) == 28.97, \
     "There was a problem with the utility value returned by your TSP class."
 print("Looks good!")
-# %%
-
-tsp.successors().
 # %%
 # Test the successors() method
 successor_paths = set([x.path for x in tsp.successors()])
@@ -227,3 +216,14 @@ assert all(contains(successor_paths, x) for x in expected_paths), \
     "It looks like your successors list does not implement the suggested neighborhood function."
 print("Looks good!")
 # %%
+# Create the problem instance and plot the initial state
+num_cities = 10
+shuffle = False
+
+capitals_tsp = TravelingSalesmanProblem(capitals_list[:num_cities], shuffle=shuffle)
+starting_city = capitals_tsp.path[0]
+print("Initial path value: {:.2f}".format(-capitals_tsp.utility))
+print(capitals_tsp.path)  # The start/end point is indicated with a yellow star
+show_path(capitals_tsp.coords, starting_city)
+# %%
+
